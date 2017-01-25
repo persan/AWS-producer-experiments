@@ -37,7 +37,7 @@ package AWS.Resources.Streams.Pipes is
    overriding function End_Of_File (Resource : Stream_Type) return Boolean;
    --  Returns True if the end of the memory stream has been reached
 
-   procedure Clear (Resource : in out Stream_Type) with Inline;
+   procedure Clear (Resource : in out Stream_Type);
    --  Delete all data from memory stream
 
    overriding procedure Reset (Resource : in out Stream_Type) is null;
@@ -50,7 +50,7 @@ package AWS.Resources.Streams.Pipes is
    --  whose index is To.
 
    overriding function Size
-     (Resource : Stream_Type) return Stream_Element_Offset is ( 0);
+     (Resource : Stream_Type) return Stream_Element_Offset is (0);
    --  Returns the number of bytes in the memory stream
 
    overriding procedure Close (Resource : in out Stream_Type);
@@ -59,8 +59,11 @@ package AWS.Resources.Streams.Pipes is
 private
 
    type Stream_Type is new Streams.Memory.Stream_Type with record
-      Guard : aliased GNAT.Semaphores.Binary_Semaphore (True, System.Default_Priority);
-      Is_Open : Boolean := True;
+      Guard     : aliased GNAT.Semaphores.Binary_Semaphore (True, System.Default_Priority);
+      Is_Open   : Boolean := True;
+      Has_Write : Boolean := False with Atomic;
+      Has_Read  : Boolean := False with Atomic;
+
    end record;
 
 

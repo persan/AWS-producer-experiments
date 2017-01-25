@@ -11,7 +11,10 @@ package body AWS.Resources.Streams.Pipes is
    is
       Lock : Lock_Type (Resource.Guard'Access) with Warnings => Off;
    begin
-      Streams.Memory.Stream_Type (Resource).Append (Buffer, Trim);
+      if Resource.Has_Read then
+         Streams.Memory.Stream_Type (Resource).Append (Buffer, Trim);
+         Resource.Has_Write := True;
+      end if;
    end Append;
 
    ------------
@@ -24,7 +27,10 @@ package body AWS.Resources.Streams.Pipes is
    is
       Lock : Lock_Type (Resource.Guard'Access) with Warnings => Off;
    begin
+      if Resource.Has_Read then
       Streams.Memory.Stream_Type (Resource).Append (Buffer);
+      Resource.Has_Write := True;
+      end if;
    end Append;
 
    ------------
@@ -37,7 +43,10 @@ package body AWS.Resources.Streams.Pipes is
    is
       Lock : Lock_Type (Resource.Guard'Access) with Warnings => Off;
    begin
-      Streams.Memory.Stream_Type (Resource).Append (Buffer);
+      if Resource.Has_Read then
+         Streams.Memory.Stream_Type (Resource).Append (Buffer);
+         Resource.Has_Write := True;
+      end if;
    end Append;
 
    ----------
@@ -51,6 +60,10 @@ package body AWS.Resources.Streams.Pipes is
    is
       Lock : Lock_Type (Resource.Guard'Access) with Warnings => Off;
    begin
+      Resource.Has_Read := True;
+      while not Resource.Has_Write loop
+         delay 0.01;
+      end loop;
       Streams.Memory.Stream_Type (Resource).Read (Buffer, Last);
    end Read;
 
