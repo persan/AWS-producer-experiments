@@ -3,3 +3,5 @@
 *.d
 # Ada Library Information
 *.ali
+*.a
+*.so
