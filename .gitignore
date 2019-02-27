@@ -5,3 +5,5 @@
 *.ali
 *.a
 *.so
+*.stdout
+*.stderr
